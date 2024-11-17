@@ -42,7 +42,7 @@ jobs:
         run: mvn clean package
 
       - name: Verify JAR Build
-        run: file target/api-${{ env.VERSION }}.jar
+        run: file target/product-${{ env.VERSION }}.jar
 
       - name: Create GitHub Tag
         run: |
@@ -53,12 +53,12 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.TAG_NAME }}
-          files: target/api-${{ env.VERSION }}.jar
+          files: target/product-${{ env.VERSION }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare Docker Build Context
-        run: mv target/api-${{ env.VERSION }}.jar ./api.jar  # Mueve el JAR al contexto de construcción de Docker
+        run: mv target/product-${{ env.VERSION }}.jar ./product.jar  # Mueve el JAR al contexto de construcción de Docker
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -69,6 +69,6 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/api:${{ env.VERSION }} -t ghcr.io/${{ github.repository_owner }}/api:latest .
-          docker push ghcr.io/${{ github.repository_owner }}/api:${{ env.VERSION }}
-          docker push ghcr.io/${{ github.repository_owner }}/api:latest
+          docker build -t ghcr.io/${{ github.repository_owner }}/product:${{ env.VERSION }} -t ghcr.io/${{ github.repository_owner }}/product:latest .
+          docker push ghcr.io/${{ github.repository_owner }}/product:${{ env.VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/product:latest
