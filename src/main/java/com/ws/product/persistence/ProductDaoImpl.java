@@ -40,7 +40,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Optional<Product> findById(Long productId) {
-        return productRepository.findById(productId);
+        return productRepository.findByIdWithDetails(productId);
     }
 
     @Override

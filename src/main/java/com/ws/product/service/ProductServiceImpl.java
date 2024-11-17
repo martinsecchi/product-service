@@ -1,9 +1,13 @@
 package com.ws.product.service;
 
+import com.ws.product.dto.ProductDto;
 import com.ws.product.entity.Product;
+import com.ws.product.exception.ProductNotFoundException;
 import com.ws.product.persistence.ProductDao;
+import com.ws.product.util.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,27 +19,35 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDAO;
 
     @Override
-    public void saveProduct(Product product) {
-        productDAO.save(product);
+    public void saveProduct(ProductDto product) {
+        productDAO.update(ProductMapper.INSTANCE.productDTOToProduct(product));
+
     }
 
     @Override
-    public void updateProduct(Product product) {
-        productDAO.update(product);
+    public void updateProduct(ProductDto product) {
+        productDAO.update(ProductMapper.INSTANCE.productDTOToProduct(product));
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long productId) {
-        productDAO.delete(productId);
+        Optional<Product> product = productDAO.findById(productId);
+        if (product.isPresent()) {
+            productDAO.delete(productId);
+        } else {
+            throw new ProductNotFoundException("Producto no encontrado con id: " + productId);
+        }
     }
 
     @Override
-    public Optional<Product> getProductById(Long productId) {
-        return productDAO.findById(productId);
+    public Optional<ProductDto> getProductById(Long productId) {
+        Optional<Product> product = productDAO.findById(productId);
+        return product.map(ProductMapper.INSTANCE::productToProductDTO);
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productDAO.findAll();
+    public List<ProductDto> getAllProducts() {
+        return productDAO.findAll().stream().map(ProductMapper.INSTANCE::productToProductDTO).toList();
     }
 }

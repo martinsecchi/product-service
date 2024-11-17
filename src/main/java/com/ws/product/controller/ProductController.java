@@ -1,9 +1,10 @@
 package com.ws.product.controller;
 
 
-import com.ws.product.entity.Product;
+import com.ws.product.dto.ProductDto;
 import com.ws.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +18,17 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        productService.saveProduct(product);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<?> createProduct(@RequestBody ProductDto product) {
+        try {
+            productService.saveProduct(product);
+            return ResponseEntity.status(HttpStatus.CREATED).body(product);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el producto: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto product) {
         product.setProductId(id);
         productService.updateProduct(product);
         return ResponseEntity.ok(product);
@@ -37,13 +42,13 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
-       return productService.getProductById(id)
-               .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return productService.getProductById(id)
+                .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 }
