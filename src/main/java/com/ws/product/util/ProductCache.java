@@ -10,12 +10,8 @@ public class ProductCache {
 
     private final ConcurrentHashMap<Integer, Product> productCache = new ConcurrentHashMap<>();
 
-    public void addProductToCache(Product product) {
-        productCache.put(product.hashCode(), product);
-    }
-
-    public boolean isProductInCache(Product product) {
-        return productCache.containsKey(product.hashCode());
+    public synchronized boolean isProductInCache(Product product) {
+        return productCache.computeIfAbsent(product.hashCode(), k -> product) != product;
     }
 
     public void removeProductFromCache(Product product) {

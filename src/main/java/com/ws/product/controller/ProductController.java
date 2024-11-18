@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -27,6 +26,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al crear el producto: " + e.getMessage());
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto product) {
@@ -58,7 +58,6 @@ public class ProductController {
         List<ProductDetailDto> details = productService.getDetailsByProductId(id);
         return ResponseEntity.ok(details);
     }
-
 
 }
 
