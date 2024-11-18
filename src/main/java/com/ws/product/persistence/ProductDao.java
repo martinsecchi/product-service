@@ -1,6 +1,7 @@
 package com.ws.product.persistence;
 
 import com.ws.product.entity.Product;
+import com.ws.product.entity.ProductDetail;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +20,5 @@ public interface ProductDao {
 
     List<Product> findAll();
 
+    List<ProductDetail> findAllDetailByProductId(Long productId);
 }

@@ -9,7 +9,7 @@ public class ProductDetailDto {
     private Long productDetailId;
     private String attributeName;
     private String attributeValue;
-    private Product product;
+    private Long productId;
 
 
     public Long getProductDetailId() {
@@ -36,11 +36,11 @@ public class ProductDetailDto {
         this.attributeValue = attributeValue;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }

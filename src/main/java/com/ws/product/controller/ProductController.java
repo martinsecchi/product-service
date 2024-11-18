@@ -1,6 +1,7 @@
 package com.ws.product.controller;
 
 
+import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.dto.ProductDto;
 import com.ws.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,14 @@ public class ProductController {
         List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
+
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<List<ProductDetailDto>> getDetailsByProductId(@PathVariable Long id) {
+        List<ProductDetailDto> details = productService.getDetailsByProductId(id);
+        return ResponseEntity.ok(details);
+    }
+
+
 }
 

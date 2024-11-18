@@ -1,9 +1,12 @@
 package com.ws.product.service;
 
+import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.dto.ProductDto;
 import com.ws.product.entity.Product;
+import com.ws.product.entity.ProductDetail;
 import com.ws.product.exception.ProductNotFoundException;
 import com.ws.product.persistence.ProductDao;
+import com.ws.product.util.DetailMapper;
 import com.ws.product.util.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +51,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getAllProducts() {
-        return productDAO.findAll().stream().map(ProductMapper.INSTANCE::productToProductDTO).toList();
+        return productDAO.findAll()
+                .stream()
+                .map(ProductMapper.INSTANCE::productToProductDTO)
+                .toList();
+    }
+
+    public List<ProductDetailDto> getDetailsByProductId(Long productId) {
+        return productDAO.findAllDetailByProductId(productId)
+                .stream()
+                .map(DetailMapper.INSTANCE::detailToDetailDTO).toList();
     }
 }
