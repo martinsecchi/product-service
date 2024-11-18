@@ -1,7 +1,6 @@
 package com.ws.product.service;
 
 import com.ws.product.dto.ProductDto;
-import com.ws.product.entity.Product;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;

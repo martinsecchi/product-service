@@ -1,8 +1,10 @@
 package com.ws.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "PRODUCT_DETAIL")
 public class ProductDetail {
 
     @Id
@@ -14,6 +16,7 @@ public class ProductDetail {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
     private Product product;
 
     // Getters and Setters

@@ -2,7 +2,7 @@ package com.ws.product.persistence;
 
 import com.ws.product.entity.Product;
 import com.ws.product.repository.ProductRepository;
-import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Component
 public class ProductDaoImpl implements ProductDao {
 
-    @PersistenceContext
+    @Autowired
     private ProductRepository productRepository;
 
 

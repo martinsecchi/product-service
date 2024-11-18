@@ -1,11 +1,14 @@
 package com.ws.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@Table(name = "PRODUCT")
 public class Product {
 
     @Id
@@ -16,7 +19,8 @@ public class Product {
     private BigDecimal price;
     private String category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ProductDetail> productDetails;
 
     public Long getProductId() {
