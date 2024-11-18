@@ -3,10 +3,11 @@ package com.ws.product.service;
 import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.dto.ProductDto;
 import com.ws.product.entity.Product;
-import com.ws.product.entity.ProductDetail;
+import com.ws.product.exception.ProductAlreadyExistsException;
 import com.ws.product.exception.ProductNotFoundException;
 import com.ws.product.persistence.ProductDao;
 import com.ws.product.util.DetailMapper;
+import com.ws.product.util.ProductCache;
 import com.ws.product.util.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDao productDAO;
+    @Autowired
+    private ProductCache productCache;
 
     @Override
     public void saveProduct(ProductDto product) {
+        Product productCheck = ProductMapper.INSTANCE.productDTOToProduct(product);
+        if (productCache.isProductInCache(productCheck)){
+            throw new ProductAlreadyExistsException("El producto ya existe en el cache");
+        }
         productDAO.update(ProductMapper.INSTANCE.productDTOToProduct(product));
-
+        productCache.addProductToCache(productCheck);
     }
 
     @Override

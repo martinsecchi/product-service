@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -68,5 +69,18 @@ public class Product {
 
     public void setProductDetails(List<ProductDetail> productDetails) {
         this.productDetails = productDetails;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(price, product.price) && Objects.equals(category, product.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, price, category);
     }
 }

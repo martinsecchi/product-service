@@ -1,8 +1,8 @@
 package com.ws.product.controller;
 
-
 import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.dto.ProductDto;
+import com.ws.product.exception.ProductAlreadyExistsException;
 import com.ws.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,8 @@ public class ProductController {
         try {
             productService.saveProduct(product);
             return ResponseEntity.status(HttpStatus.CREATED).body(product);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el producto: " + e.getMessage());
+        } catch (ProductAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al crear el producto: " + e.getMessage());
         }
     }
 
@@ -52,7 +52,6 @@ public class ProductController {
         List<ProductDto> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
-
 
     @GetMapping("/{id}/details")
     public ResponseEntity<List<ProductDetailDto>> getDetailsByProductId(@PathVariable Long id) {
