@@ -1,9 +1,5 @@
 package com.ws.product.dto;
 
-import com.ws.product.entity.Product;
-import jakarta.persistence.*;
-
-
 public class ProductDetailDto {
 
     private Long productDetailId;

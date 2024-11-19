@@ -1,6 +1,6 @@
 package com.ws.product.util;
 
-import com.ws.product.entity.Product;
+import com.ws.product.dto.ProductDto;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,13 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ProductCache {
 
-    private final ConcurrentHashMap<Integer, Product> productCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, ProductDto> productCache = new ConcurrentHashMap<>();
 
-    public synchronized boolean isProductInCache(Product product) {
+    public synchronized boolean isProductInCache(ProductDto product) {
         return productCache.computeIfAbsent(product.hashCode(), k -> product) != product;
     }
 
-    public void removeProductFromCache(Product product) {
+    public void removeProductFromCache(ProductDto product) {
         productCache.remove(product.hashCode());
     }
 }

@@ -26,8 +26,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void saveProduct(ProductDto product) {
-        Product productCheck = ProductMapper.INSTANCE.productDTOToProduct(product);
-        if (productCache.isProductInCache(productCheck)){
+        if (productCache.isProductInCache(product)){
             throw new ProductAlreadyExistsException("El producto ya existe en el cache");
         }
         productDAO.save(ProductMapper.INSTANCE.productDTOToProduct(product));
