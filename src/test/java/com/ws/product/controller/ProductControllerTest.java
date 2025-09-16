@@ -1,13 +1,16 @@
 package com.ws.product.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.service.ProductService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,31 +19,30 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ProductController.class)
-public class ProductControllerTest {
+class ProductControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private ProductService productService;
 
-    @Autowired
+    @InjectMocks
+    private ProductController productController;
+
     private ObjectMapper objectMapper;
 
-    @Test
-    public void givenValidProductId_whenGetDetailsByProductId_thenReturnProductDetails() throws Exception {
-        ProductDetailDto detail1 = new ProductDetailDto();
-        detail1.setProductDetailId(1L);
-        detail1.setAttributeName("Color");
-        detail1.setAttributeValue("Rojo");
-        detail1.setProductId(1L);
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this)
+        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
+        objectMapper = new ObjectMapper();
+    }
 
-        ProductDetailDto detail2 = new ProductDetailDto();
-        detail2.setProductDetailId(2L);
-        detail2.setAttributeName("Tamaño");
-        detail2.setAttributeValue("Mediano");
-        detail2.setProductId(1L);
+    @Test
+    void givenValidProductId_whenGetDetailsByProductId_thenReturnProductDetails() throws Exception {
+        // Arrange
+        ProductDetailDto detail1 = new ProductDetailDto(1L, "Color", "Rojo", 1L);
+        ProductDetailDto detail2 = new ProductDetailDto(2L, "Tamaño", "Mediano", 1L);
 
         List<ProductDetailDto> productDetails = Arrays.asList(detail1, detail2);
         given(productService.getDetailsByProductId(1L)).willReturn(productDetails);

@@ -2,22 +2,21 @@ package com.ws.product.service;
 
 import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.dto.ProductDto;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public interface ProductService {
 
-    public void saveProduct(ProductDto product);
+    public void save(ProductDto product);
 
-    public void updateProduct(ProductDto product);
+    public void update(Long id, ProductDto product);
 
-    public void deleteProduct(Long productId);
+    public void delete(Long productId);
 
-    public Optional<ProductDto> getProductById(Long productId);
+    public Optional<ProductDto> getById(Long productId);
 
-    public List<ProductDto> getAllProducts();
+    public List<ProductDto> getAll();
 
     public List<ProductDetailDto> getDetailsByProductId(Long productId);
 

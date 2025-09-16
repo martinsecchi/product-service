@@ -2,60 +2,56 @@ package com.ws.product.controller;
 
 import com.ws.product.dto.ProductDetailDto;
 import com.ws.product.dto.ProductDto;
-import com.ws.product.exception.ProductAlreadyExistsException;
 import com.ws.product.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    final private ProductService productServiceImpl;
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody ProductDto product) {
-        try {
-            productService.saveProduct(product);
-            return ResponseEntity.status(HttpStatus.CREATED).body(product);
-        } catch (ProductAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al crear el producto: " + e.getMessage());
-        }
+    public ResponseEntity<?> create(@RequestBody ProductDto product) {
+        productServiceImpl.save(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto product) {
-        product.setProductId(id);
-        productService.updateProduct(product);
+    public ResponseEntity<ProductDto> update(@PathVariable Long id, @RequestBody ProductDto product) {
+        productServiceImpl.update(id, product);
         return ResponseEntity.ok(product);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productServiceImpl.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
-        return productService.getProductById(id)
+        return productServiceImpl.getById(id)
                 .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> products = productService.getAllProducts();
+        List<ProductDto> products = productServiceImpl.getAll();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}/details")
     public ResponseEntity<List<ProductDetailDto>> getDetailsByProductId(@PathVariable Long id) {
-        List<ProductDetailDto> details = productService.getDetailsByProductId(id);
+        List<ProductDetailDto> details = productServiceImpl.getDetailsByProductId(id);
         return ResponseEntity.ok(details);
     }
 
