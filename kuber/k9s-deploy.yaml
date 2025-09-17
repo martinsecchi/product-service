@@ -1,16 +1,4 @@
-# 1. Persistent Volume para PostgreSQL
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
-# 2. Deployment de PostgreSQL
+# 1. Deployment de PostgreSQL con hostPath local
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,10 +32,11 @@ spec:
               mountPath: /var/lib/postgresql/data
       volumes:
         - name: postgres-storage
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+          hostPath:
+            path: /tmp/postgres-data      # Carpeta local en tu máquina
+            type: DirectoryOrCreate
 ---
-# 3. Deployment de la app Spring Boot
+# 2. Deployment de la app Spring Boot
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -64,8 +53,8 @@ spec:
     spec:
       containers:
         - name: product
-          image: product-service:latest  # <-- reemplazalo con tu imagen real
-          imagePullPolicy: Never  # <-- IMPORTANTE para usar imagen local
+          image: ghcr.io/martinsecchi/product:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
@@ -78,7 +67,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: postgres
 ---
-# 4. Service para exponer tu app (NodePort)
+# 3. Service para exponer la app (LoadBalancer)
 apiVersion: v1
 kind: Service
 metadata:
@@ -89,10 +78,9 @@ spec:
   ports:
     - port: 80
       targetPort: 8080
-      nodePort: 30080
   type: LoadBalancer
 ---
-# 5. Service interno para PostgreSQL
+# 4. Service interno para PostgreSQL
 apiVersion: v1
 kind: Service
 metadata:
