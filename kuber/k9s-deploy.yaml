@@ -36,7 +36,7 @@ spec:
             path: /tmp/postgres-data      # Carpeta local en tu máquina
             type: DirectoryOrCreate
 ---
-# 2. Deployment de la app Spring Boot
+# 2. Deployment de la app Spring Boot (con initContainer y readinessProbe)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -51,6 +51,10 @@ spec:
       labels:
         app: product
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z postgres 5432; do echo "Esperando a postgres..."; sleep 2; done;']
       containers:
         - name: product
           image: ghcr.io/martinsecchi/product:latest
@@ -66,6 +70,12 @@ spec:
               value: postgres
             - name: SPRING_DATASOURCE_PASSWORD
               value: postgres
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
 ---
 # 3. Service para exponer la app (LoadBalancer)
 apiVersion: v1
