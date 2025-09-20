@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- Obtener propiedades de Spring Boot -->
+    <springProperty scope="context" name="app_name" source="spring.application.name" defaultValue="product-service"/>
+    <springProperty scope="context" name="server_port" source="server.port" defaultValue="8080"/>
+
+    <!-- Generar UUID único para esta instancia -->
+    <property name="instance_uuid" value="${random.uuid}" />
+
+    <!-- Appender para consola en formato JSON -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{
+                "appname": "${app_name}",
+                "version": "1.13",
+                "instance_id": "${app_name}-${instance_uuid}",
+                "instance_short_id": "${app_name}-${server_port}",
+                "server_port": "${server_port}",
+                "hostname": "${HOSTNAME}",
+                "uuid": "${instance_uuid}"
+                }</customFields>
+        </encoder>
+    </appender>
+
+    <!-- Appender para archivo (opcional) -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${logging.file.name}</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{
+                "appname": "${app_name}",
+                "version": "1.13",
+                "instance_id": "${app_name}-${instance_uuid}",
+                "instance_short_id": "${app_name}-${server_port}",
+                "server_port": "${server_port}",
+                "uuid": "${instance_uuid}"
+                }</customFields>
+        </encoder>
+    </appender>
+
+    <!-- Appender para Logstash (para después) -->
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5000</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{
+                "appname": "${app_name}",
+                "version": "1.13",
+                "instance_id": "${app_name}-${instance_uuid}",
+                "instance_short_id": "${app_name}-${server_port}",
+                "server_port": "${server_port}",
+                "hostname": "${HOSTNAME}",
+                "uuid": "${instance_uuid}",
+                "environment": "development"
+                }</customFields>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <appender-ref ref="FILE"/>
+        <!-- <appender-ref ref="logstash"/> -->
+    </root>
+
+    <!-- Logger específico para tu aplicación -->
+    <logger name="com.ws" level="DEBUG"/>
+</configuration>
