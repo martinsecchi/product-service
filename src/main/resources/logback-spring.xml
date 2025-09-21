@@ -8,7 +8,6 @@
 
     <!-- Generar UUID único para esta instancia -->
     <property name="instance_uuid" value="${random.uuid}" />
-
     <!-- Appender para consola en formato JSON -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
