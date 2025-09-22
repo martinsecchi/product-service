@@ -8,12 +8,14 @@
 
     <!-- Generar UUID único para esta instancia -->
     <property name="instance_uuid" value="${random.uuid}" />
-    <!-- Appender para consola en formato JSON -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+
+    <!-- Appender para consola en formato JSON (ÚNICO APRENDER NECESARIO) -->
+    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Todos tus campos personalizados se quedan aquí. ¡Están perfectos! -->
             <customFields>{
                 "appname": "${app_name}",
-                "version": "1.13",
+                "version": "1.15",
                 "instance_id": "${app_name}-${instance_uuid}",
                 "instance_short_id": "${app_name}-${server_port}",
                 "server_port": "${server_port}",
@@ -23,42 +25,12 @@
         </encoder>
     </appender>
 
-    <!-- Appender para archivo (opcional) -->
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${logging.file.name}</file>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{
-                "appname": "${app_name}",
-                "version": "1.13",
-                "instance_id": "${app_name}-${instance_uuid}",
-                "instance_short_id": "${app_name}-${server_port}",
-                "server_port": "${server_port}",
-                "uuid": "${instance_uuid}"
-                }</customFields>
-        </encoder>
-    </appender>
-
-    <!-- Appender para Logstash (para después) -->
-    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>localhost:5000</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{
-                "appname": "${app_name}",
-                "version": "1.13",
-                "instance_id": "${app_name}-${instance_uuid}",
-                "instance_short_id": "${app_name}-${server_port}",
-                "server_port": "${server_port}",
-                "hostname": "${HOSTNAME}",
-                "uuid": "${instance_uuid}",
-                "environment": "development"
-                }</customFields>
-        </encoder>
-    </appender>
-
+    <!--
+        El root logger ahora solo apunta a la consola JSON.
+        Hemos eliminado las referencias a "FILE" y "logstash".
+    -->
     <root level="INFO">
-        <appender-ref ref="console"/>
-        <appender-ref ref="FILE"/>
-        <!-- <appender-ref ref="logstash"/> -->
+        <appender-ref ref="CONSOLE_JSON"/>
     </root>
 
     <!-- Logger específico para tu aplicación -->
