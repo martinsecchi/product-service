@@ -1,0 +1,41 @@
+# 1. Elasticsearch Deployment (simple, para desarrollo)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+        ports:
+        - containerPort: 9200
+        env:
+        - name: discovery.type
+          value: "single-node"
+        - name: ES_JAVA_OPTS
+          value: "-Xms512m -Xmx512m" # Ajustar memoria para Docker Desktop
+        - name: xpack.security.enabled
+          value: "false" # Desactivar seguridad para simplificar
+---
+# 2. Elasticsearch Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  type: NodePort
+  ports:
+    - port: 9200
+      targetPort: 9200
+      nodePort: 30323   # puedes dejarlo vacío para aleatorio, o poner el que quieras (entre 30000 y 32767)
+  selector:
+    app: elasticsearch

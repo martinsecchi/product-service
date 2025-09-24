@@ -29,8 +29,10 @@ kind: Service
 metadata:
   name: kibana
 spec:
-  selector:
-    app: kibana
+  type: NodePort
   ports:
     - port: 5601
       targetPort: 5601
+      nodePort: 31408   # puedes dejarlo vacío para aleatorio, o poner el que quieras (entre 30000 y 32767)
+  selector:
+    app: kibana
