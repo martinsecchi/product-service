@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.ws</groupId>
     <artifactId>product</artifactId>
-    <version>1.20</version>
+    <version>1.21</version>
     <name>product</name>
     <description>Product manager.</description>
     <properties>
