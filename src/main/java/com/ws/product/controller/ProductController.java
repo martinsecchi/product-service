@@ -21,7 +21,7 @@ public class ProductController {
 
     @GetMapping("/version")
     public ResponseEntity<String> version() {
-        return ResponseEntity.ok("Versión v1");
+        return ResponseEntity.ok("Versión v2");
     }
 
 
