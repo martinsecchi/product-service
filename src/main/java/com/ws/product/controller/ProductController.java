@@ -19,6 +19,12 @@ public class ProductController {
 
     final private ProductService productServiceImpl;
 
+    @GetMapping("/version")
+    public ResponseEntity<String> version() {
+        return ResponseEntity.ok("Versión v1");
+    }
+
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ProductDto product) {
         productServiceImpl.save(product);
